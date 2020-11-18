@@ -132,19 +132,23 @@ extension HomeVC: ClientDelegate {
         self.users = users
     }
     
+    typealias LocationUpdate = (id: String, location: Location)
+    
     // Updates
     func didUpdateUserCoordinates(locations: LocationUpdates) {
         // Here we will try to figureout whose coordinate has changed
-        for updates in locations {
-            // Find a user with the same id which came from updates
-            if let index = self.users.firstIndex(where: { $0.id == updates.id }) {
-                // Checking the locatoin on difference
-                // (in my case its only user with id 102)
-                if self.users[index].location != updates.location {
-                    // Update user last location
-                    self.users[index].location = updates.location
-                    self.updateAnnotation(for: updates.id, location: updates.location)
-                }
+        for updates in locations { findUser(with: updates) }
+    }
+    
+    private func findUser(with updates: LocationUpdate) {
+        // Find a user with the same id which came from updates
+        if let index = self.users.firstIndex(where: { $0.id == updates.id }) {
+            // Checking the locatoin on difference
+            // (in my case its only user with id 102)
+            if self.users[index].location != updates.location {
+                // Update user last location
+                self.users[index].location = updates.location
+                self.updateAnnotation(for: updates.id, location: updates.location)
             }
         }
     }

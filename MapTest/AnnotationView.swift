@@ -56,11 +56,11 @@ class AnnotationView: MKAnnotationView {
             layer.shadowColor = UIColor.black.cgColor
             layer.shadowOffset = .zero
             
-            makeInitialView()
+            setupInitialView()
         }
     }
     
-    private func makeInitialView() {
+    private func setupInitialView() {
         // Pin
         image = pinImage.circularImageWithBorderOf(color: pinBorder, diameter: pinDiameter, boderWidth: pinBorderWidth)
         
@@ -76,6 +76,6 @@ class AnnotationView: MKAnnotationView {
     }
     
     func didDeselect() {
-        makeInitialView()
+        setupInitialView()
     }
 }
