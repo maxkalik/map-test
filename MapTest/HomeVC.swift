@@ -9,12 +9,25 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController {
+// MARK: - Map Properties
 
-    @IBOutlet weak var mapView: MKMapView!
+fileprivate let mapInset: CGFloat = 165
+
+
+// MARK: - HomeVC
+
+class HomeVC: UIViewController {
+
+    @IBOutlet weak var mapView: MKMapView! {
+        didSet {
+            // Register custom annotation
+            mapView.register(AnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
+            mapView.delegate = self
+        }
+    }
     
-    var users = [User]()
-    var annotations = [MKPointAnnotation]()
+    private var users = [User]()
+    private var annotations = [Annotation]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +42,8 @@ class ViewController: UIViewController {
         client.delegate = self
     }
     
+    // MARK: - Map and Annotations
+    
     // Create annotations and add them to the map
     private func createAnnotatinos(userList: [User]) {
         // Walking through all users and create annotations
@@ -38,30 +53,42 @@ class ViewController: UIViewController {
         }
         mapView.addAnnotations(annotations)
         // Show all annotations and fit them with proper zooming
-        mapView.fitAnnotations()
+        mapView.fitAnnotations(inset: mapInset)
     }
     
     // Create annotation fro a user
-    private func createAnnotation(for user: User) -> MKPointAnnotation {
+    private func createAnnotation(for user: User) -> Annotation {
         // Before creating annotation we should prepare coordinate
         let latitude = user.location.latitude
         let longitude = user.location.longitude
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        // Creating annotation
-        let annotation = MKPointAnnotation()
-        // Set coordinate to annotation
-        annotation.coordinate = coordinate
+        // Instantiate annotation with coordinates and user info
+        let annotation = Annotation(id: user.id, title: user.name, subtitle: "", imageURL: URL(string: user.image), coordinate: coordinate)
         
         // Look up the current location of the annotation
         lookUpCurrentLocation(latitude: latitude, longitude: longitude) { placemark in
-            // Street name
-            let street = placemark?.thoroughfare ?? ""
-            // Building number
-            let building = placemark?.subThoroughfare ?? ""
-            print("\(street) \(building)")
+            // Set subtitle with the address
+            annotation.subtitle = self.getAddress(from: placemark)
         }
         return annotation
     }
+    
+    private func updateAnnotation(for id: String, location: Location) {
+        if let index = self.annotations.firstIndex(where: { $0.id == id }) {
+            // Make annotation movable smoothly
+            UIView.animate(withDuration: 0.3) {
+                // Set coordinate
+                self.annotations[index].coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                // and of course change the currect address
+                // (see the model Annotation how these variabels can be changed
+                self.lookUpCurrentLocation(latitude: location.latitude, longitude: location.longitude) { placemark in
+                    self.annotations[index].subtitle = self.getAddress(from: placemark)
+                }
+            }
+        }
+    }
+    
+    // MARK: - CoreLocation
     
     // Convert a Coordinate into a Placemark
     // This method I took from this article: https://developer.apple.com/documentation/corelocation/converting_between_coordinates_and_user-friendly_place_names
@@ -78,13 +105,22 @@ class ViewController: UIViewController {
             }
         })
     }
+    
+    // Parse the current adress from placemark
+    private func getAddress(from placemark: CLPlacemark?) -> String {
+        // Street name
+        let street = placemark?.thoroughfare ?? ""
+        // Building number
+        let building = placemark?.subThoroughfare ?? ""
+        return "\(street) \(building)"
+    }
 }
 
 // MARK: - ClientDelegate
 
-extension ViewController: ClientDelegate {
+extension HomeVC: ClientDelegate {
     
-    // initial User List
+    // Initial User List
     func didRecieveUserList(users: [User]) {
         createAnnotatinos(userList: users)
         self.users = users
@@ -101,9 +137,25 @@ extension ViewController: ClientDelegate {
                 if self.users[index].location != updates.location {
                     // Update user last location
                     self.users[index].location = updates.location
-                    print(updates.id, updates.location)
+                    self.updateAnnotation(for: updates.id, location: updates.location)
                 }
             }
+        }
+    }
+}
+
+extension HomeVC: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let view = view as? AnnotationView {
+            // Call method in the view when annotation did select
+            view.didSelect()
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        if let view = view as? AnnotationView {
+            // Call method in the view when annotation did deseleted
+            view.didDeselect()
         }
     }
 }
