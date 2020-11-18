@@ -24,7 +24,7 @@ extension Client {
         var userList = [User]()
         
         // Parse the incoming string by removing USERLIST and all characters \n
-        let usersString = rawString.removeSubstring("USERLIST")?.removeSubstring("\n")
+        let usersString = rawString.removeSubstring(Command.USERLIST)?.removeSubstring("\n")
         
         // Spliting into sequence like ["user string", "user string"]
         let users: [String.SubSequence] = usersString!.bySemicolon
@@ -55,7 +55,7 @@ extension Client {
         // Create an array with parsed strings
         // ["101", "12.1234456", "12.123456"] <- where first item is an id the rest is coordinate
         let updates: [String] = lines.compactMap { subStr -> String? in
-            let updatedSubStr = subStr.removeSubstring("UPDATE")
+            let updatedSubStr = subStr.removeSubstring(Command.UPDATE)
             return updatedSubStr
         }
         // Walk through this array and parse into the LocationUpdates type

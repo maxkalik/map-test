@@ -96,11 +96,11 @@ class Client {
         guard let rawDataString = String(data: data, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) else { return }
         guard let keyWord = rawDataString.firstWord() else { return }
         switch keyWord {
-        case "USERLIST":
+        case Command.USERLIST:
             let userList = parseUserList(from: rawDataString)
             // Delegate user list to view controller
             self.delegate?.didRecieveUserList(users: userList)
-        case "UPDATE":
+        case Command.UPDATE:
             let locationUpdates = parseUpdatedLocations(from: rawDataString)
             // Delegate updates to view controller
             self.delegate?.didUpdateUserCoordinates(locations: locationUpdates)

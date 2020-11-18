@@ -21,9 +21,9 @@ class ViewController: UIViewController {
     }
 
     private func startClient() {
-        let client = Client(hostName: "ios-test.printful.lv", port: 6111)
+        let client = Client(hostName: Settings.hostName, port: Settings.port)
         client.start()
-        client.send(line: "AUTHORIZE maxkalik@gmail.com")
+        client.send(line: "\(Command.AUTHORIZE) \(Settings.email)")
         client.delegate = self
     }
     
