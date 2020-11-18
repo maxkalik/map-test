@@ -7,6 +7,11 @@
 
 import Foundation
 
+// We will use an array of tuples with id and location
+// Why tuples - because I want to save an id wich I will use in the future to find the user who is moving
+// (whose coordinate is changing)
+typealias LocationUpdates = [(id: String, location: Location)]
+
 extension Client {
     
     // MARK: Parse USERLIST string to the model
@@ -40,11 +45,6 @@ extension Client {
     
     
     // MARK: Parse UPDATE string to the model
-    
-    // We will use an array of tuples with id and location
-    // Why tuples - because I want to save an id wich I will use in the future to find the user who is moving
-    // (whose coordinate is changing)
-    typealias LocationUpdates = [(id: String, location: Location)]
     
     func parseUpdatedLocations(from rawString: String) -> LocationUpdates {
         // Create an instance of LocationUpdates

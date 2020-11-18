@@ -11,9 +11,18 @@
 import Foundation
 import Network
 
+// I suggest to use delegation for this case
+// we will delegate user list and updates
+
+protocol ClientDelegate: AnyObject {
+    func didUpdateUserCoordinates(locations: LocationUpdates)
+    func didRecieveUserList(users: [User])
+}
+
 class Client {
 
     private let connection: NWConnection
+    weak var delegate: ClientDelegate?
     
     // We initialize this class with hostname and port using tcp
     init(hostName: String, port: Int) {
@@ -88,10 +97,13 @@ class Client {
         guard let keyWord = rawDataString.firstWord() else { return }
         switch keyWord {
         case "USERLIST":
-            print(parseUserList(from: rawDataString))
+            let userList = parseUserList(from: rawDataString)
+            // Delegate user list to view controller
+            self.delegate?.didRecieveUserList(users: userList)
         case "UPDATE":
             let locationUpdates = parseUpdatedLocations(from: rawDataString)
-            print(locationUpdates)
+            // Delegate updates to view controller
+            self.delegate?.didUpdateUserCoordinates(locations: locationUpdates)
         default:
             return
         }

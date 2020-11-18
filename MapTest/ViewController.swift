@@ -16,6 +16,17 @@ class ViewController: UIViewController {
         let service = Client(hostName: "ios-test.printful.lv", port: 6111)
         service.start()
         service.send(line: "AUTHORIZE maxkalik@gmail.com")
+        service.delegate = self
     }
 
+}
+
+extension ViewController: ClientDelegate {
+    func didRecieveUserList(users: [User]) {
+        print(users)
+    }
+    
+    func didUpdateUserCoordinates(locations: LocationUpdates) {
+        print(locations)
+    }
 }
