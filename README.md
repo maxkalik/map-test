@@ -20,3 +20,5 @@ The app should look as seen in the example image
 * Address has to update in real time, based on user location.
 * User location can be represented with any custom image (yellow ball it the example image).
 * The user location image has to smoothly animate to the latest coordinates when they are received from the server.
+
+![Design](task-design.png)

@@ -25,6 +25,7 @@ class HomeVC: UIViewController {
             mapView.delegate = self
         }
     }
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
     
     private var users = [User]()
     private var annotations = [Annotation]()
@@ -32,8 +33,10 @@ class HomeVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         startClient()
+        spinner.startAnimating()
+        mapView.isHidden = true
     }
-
+    
     // Begin client connection
     private func startClient() {
         let client = Client(hostName: Settings.hostName, port: Settings.port)
@@ -54,6 +57,9 @@ class HomeVC: UIViewController {
         mapView.addAnnotations(annotations)
         // Show all annotations and fit them with proper zooming
         mapView.fitAnnotations(inset: mapInset)
+        // Hide spinner and show mapview
+        spinner.stopAnimating()
+        mapView.isHidden = false
     }
     
     // Create annotation fro a user

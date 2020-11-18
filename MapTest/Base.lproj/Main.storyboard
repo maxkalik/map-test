@@ -20,18 +20,24 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="lQV-dK-qIa">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                             </mapView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="X1p-Wy-Xsu">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="X1p-Wy-Xsu" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dxV-fb-ZvN"/>
                             <constraint firstItem="lQV-dK-qIa" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="h2x-yz-253"/>
                             <constraint firstAttribute="bottom" secondItem="lQV-dK-qIa" secondAttribute="bottom" id="mW1-Nz-1RI"/>
                             <constraint firstItem="lQV-dK-qIa" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="rcH-5i-erU"/>
                             <constraint firstItem="lQV-dK-qIa" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="xdU-v0-znB"/>
+                            <constraint firstItem="X1p-Wy-Xsu" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="yra-BI-3AT"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="lQV-dK-qIa" id="eb0-sq-Uff"/>
+                        <outlet property="spinner" destination="X1p-Wy-Xsu" id="Cn3-lV-omn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
