@@ -38,11 +38,11 @@ class ViewController: UIViewController {
             let annotation = MKPointAnnotation()
             // Set coordinate to annotation
             annotation.coordinate = coordinate
-            // Append annotation to annotations
             annotations.append(annotation)
         }
         mapView.addAnnotations(annotations)
-        mapView.showAnnotations(mapView.annotations, animated: true)
+        // Show all annotations and fit them with proper zooming
+        mapView.fitAnnotations()
     }
 }
 
@@ -70,4 +70,3 @@ extension ViewController: ClientDelegate {
         }
     }
 }
-
