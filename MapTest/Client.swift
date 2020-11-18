@@ -65,8 +65,7 @@ class Client {
     private func startReceive() {
         connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, _, isDone, error in
             if let data: Data = data, !data.isEmpty {
-                guard let rawDataString = String(data: data, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) else { return }
-                print(rawDataString) // TODO: - this raw string should be parsed
+                self.readReceived(data: data)
             }
             if let error = error {
                 debugPrint(error.localizedDescription)
@@ -80,6 +79,21 @@ class Client {
             }
             // Make self call
             self.startReceive()
+        }
+    }
+    
+    // Read receiving data
+    private func readReceived(data: Data) {
+        guard let rawDataString = String(data: data, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) else { return }
+        guard let keyWord = rawDataString.firstWord() else { return }
+        switch keyWord {
+        case "USERLIST":
+            print(parseUserList(from: rawDataString))
+        case "UPDATE":
+            let locationUpdates = parseUpdatedLocations(from: rawDataString)
+            print(locationUpdates)
+        default:
+            return
         }
     }
 
